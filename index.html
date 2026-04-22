@@ -15,15 +15,15 @@
             font-family: -apple-system, "Noto Serif SC", serif; 
         }
         .font-serif { font-family: 'Noto Serif SC', serif; }
-        /* 模拟书页翻开的阴影 */
         .page-shadow { box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05); }
-        /* 适配刘海屏 */
         .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
+        /* 防止 Vue 加载前显示源码符号 */
+        [v-cloak] { display: none; }
     </style>
 </head>
 <body class="text-gray-800 antialiased">
 
-<div id="app">
+<div id="app" v-cloak>
     <div v-if="currentPage === 'home'" class="max-w-md mx-auto min-h-screen">
         <header class="pt-20 pb-12 px-10 text-center">
             <h1 class="text-3xl font-serif font-bold text-gray-900 tracking-widest">艾米的人生书架</h1>
@@ -55,7 +55,7 @@
     </div>
 
     <div v-if="currentPage === 'detail'" class="max-w-md mx-auto min-h-screen bg-white shadow-2xl">
-        <nav class="sticky top-0 bg-white/90 backdrop-blur-sm px-6 py-4 flex items-center border-b border-gray-50 z-50">
+        <nav class="sticky top-0 bg-white/95 backdrop-blur-sm px-6 py-4 flex items-center border-b border-gray-50 z-50">
             <button @click="currentPage = 'home'" class="p-2 -ml-3 text-gray-300 hover:text-gray-900 text-xl">←</button>
             <h2 class="flex-1 text-center font-serif font-bold text-gray-900 text-base pr-6 truncate">《{{ selectedList.title }}》</h2>
         </nav>
@@ -63,12 +63,12 @@
         <div class="p-8 space-y-16">
             <div v-for="(ep, index) in selectedList.episodes" :key="index" class="relative">
                 <div class="flex flex-col">
-                    <span class="text-[10px] font-mono text-gray-300 tracking-tighter mb-2">CHAPTER {{ (index + 1).toString().padStart(2, '0') }}</span>
+                    <span class="text-[10px] font-mono text-gray-300 tracking-tighter mb-2 uppercase">Chapter {{ (index + 1).toString().padStart(2, '0') }}</span>
                     <h3 class="font-serif font-bold text-gray-950 text-xl leading-snug mb-6">{{ ep.name }}</h3>
                     
                     <div class="relative pl-6 border-l border-gray-100 mb-8">
-                        <p class="text-base text-gray-700 leading-loose font-serif italic">
-                            {{ ep.myFeeling }}
+                        <p class="text-base text-gray-700 leading-loose font-serif italic text-justify">
+                            “{{ ep.myFeeling }}”
                         </p>
                     </div>
 
@@ -94,24 +94,23 @@
             const currentPage = ref('home');
             const selectedList = ref(null);
 
-            // 【此处修改你的内容数据】
             const podcastData = ref([
                 {
                     id: "list-01",
                     title: "十字路口Crossing",
-                    author: "Koji&Ronghui",
-                    description: "关注AI变革与机会，访谈AI时代“积极行动者。”,
+                    author: "Koji & Ronghui",
+                    description: "关注AI变革与机会，访谈AI时代“积极行动者”。",
                     tags: ["AI探索", "AI领域访谈"],
                     episodes: [
                         {
                             name: "访谈张帆：前智谱COO，为何笃信AI的机会在TOB",
-                            myFeeling: "AI对于TOB来说，到底是机会，还是自嗨，张帆认为的AI对于TOC的机会是困难的，特别是在用户体验上，是非常容易追赶的，而有行业壁垒的反而是TOB的供应链、服务体系等，因此他认为AI的机会在TOB",
-                            link: "https://www.xiaoyuzhoufm.com/episode/691952ddcbba038b42bd9077" // 放入小宇宙单集链接
+                            myFeeling: "AI对于TOB来说到底是机会还是自嗨？张帆认为AI对于TOC的机会面临巨大挑战，特别是在极易被追赶的用户体验上；而拥有行业壁垒的TOB供应链和服务体系，反而是AI真正的战场。",
+                            link: "https://www.xiaoyuzhoufm.com/episode/691952ddcbba038b42bd9077"
                         },
                         {
                             name: "Openclaw之后，谁将定义主动式AI的新战场",
-                            myFeeling: "如何重定义主动式AI。",
-                            link: "https://www.xiaoyuzhoufm.com/episode/69c1ed91fdc405fbf6f58092" 
+                            myFeeling: "探索如何重新定义主动式AI，以及在新的技术范式下，未来的竞争边界在哪里。",
+                            link: "https://www.xiaoyuzhoufm.com/episode/69c1ed91fdc405fbf6f58092"
                         }
                     ]
                 },
@@ -119,12 +118,12 @@
                     id: "list-02",
                     title: "SaaS Interviews with CEOs",
                     author: "Feed Agent",
-                    description: "What if you knew data behind the fastest growing SaaS Companies today?。",
-                    tags: ["SaaS"],
+                    description: "What if you knew data behind the fastest growing SaaS Companies today?",
+                    tags: ["SaaS", "商业洞察"],
                     episodes: [
                         {
                             name: "How Buildern Reached $2M Revenue With 300 Customers",
-                            myFeeling: "值得一听。",
+                            myFeeling: "非常硬核的增长案例。对于SaaS产品经理来说，这种从0到1的商业数据闭环非常有参考价值，值得反复研读。",
                             link: "https://www.xiaoyuzhoufm.com/episode/69d648b7f6e591a7acc2d165"
                         }
                     ]
