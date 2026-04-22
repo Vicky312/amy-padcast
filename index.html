@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>艾米的人生书架 - 成长版</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            -webkit-tap-highlight-color: transparent; 
+            background-color: #fdfaf5; 
+            font-family: -apple-system, "Noto Serif SC", serif; 
+        }
+        .font-serif { font-family: 'Noto Serif SC', serif; }
+        /* 模拟书页翻开的阴影 */
+        .page-shadow { box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05); }
+        /* 适配刘海屏 */
+        .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body class="text-gray-800 antialiased">
+
+<div id="app">
+    <div v-if="currentPage === 'home'" class="max-w-md mx-auto min-h-screen">
+        <header class="pt-20 pb-12 px-10 text-center">
+            <h1 class="text-3xl font-serif font-bold text-gray-900 tracking-widest">艾米的人生书架</h1>
+            <div class="h-1 w-12 bg-gray-900 mx-auto mt-4"></div>
+            <p class="text-[10px] text-gray-400 mt-4 font-mono tracking-[0.3em] uppercase">Growth Edition</p>
+        </header>
+
+        <main class="px-6 pb-20 space-y-8">
+            <div 
+                v-for="item in podcastData" 
+                :key="item.id"
+                @click="enterDetail(item)"
+                class="bg-white p-8 border border-gray-100 page-shadow rounded-sm active:bg-gray-50 transition-colors cursor-pointer"
+            >
+                <h2 class="text-xl font-serif font-bold text-gray-950 mb-3 text-center">《{{ item.title }}》</h2>
+                <p class="text-xs text-gray-400 text-center mb-6 font-serif">作者：{{ item.author }}</p>
+                
+                <div class="flex justify-center gap-3 mb-6">
+                    <span v-for="tag in item.tags" :key="tag" class="text-[10px] text-gray-500 border border-gray-200 px-2 py-0.5 rounded">
+                        {{ tag }}
+                    </span>
+                </div>
+
+                <p class="text-sm text-gray-600 leading-relaxed italic text-center font-serif line-clamp-2">
+                    " {{ item.description }} "
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <div v-if="currentPage === 'detail'" class="max-w-md mx-auto min-h-screen bg-white shadow-2xl">
+        <nav class="sticky top-0 bg-white/90 backdrop-blur-sm px-6 py-4 flex items-center border-b border-gray-50 z-50">
+            <button @click="currentPage = 'home'" class="p-2 -ml-3 text-gray-300 hover:text-gray-900 text-xl">←</button>
+            <h2 class="flex-1 text-center font-serif font-bold text-gray-900 text-base pr-6 truncate">《{{ selectedList.title }}》</h2>
+        </nav>
+
+        <div class="p-8 space-y-16">
+            <div v-for="(ep, index) in selectedList.episodes" :key="index" class="relative">
+                <div class="flex flex-col">
+                    <span class="text-[10px] font-mono text-gray-300 tracking-tighter mb-2">CHAPTER {{ (index + 1).toString().padStart(2, '0') }}</span>
+                    <h3 class="font-serif font-bold text-gray-950 text-xl leading-snug mb-6">{{ ep.name }}</h3>
+                    
+                    <div class="relative pl-6 border-l border-gray-100 mb-8">
+                        <p class="text-base text-gray-700 leading-loose font-serif italic">
+                            {{ ep.myFeeling }}
+                        </p>
+                    </div>
+
+                    <a 
+                        :href="ep.link" 
+                        target="_blank"
+                        class="inline-flex items-center justify-center w-full py-4 bg-gray-950 text-white rounded-sm text-xs font-bold gap-3 active:bg-gray-800 transition-all tracking-[0.2em]"
+                    >
+                        OPEN IN 小宇宙
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="safe-area-bottom h-10"></div>
+    </div>
+</div>
+
+<script>
+    const { createApp, ref } = Vue;
+
+    createApp({
+        setup() {
+            const currentPage = ref('home');
+            const selectedList = ref(null);
+
+            // 【此处修改你的内容数据】
+            const podcastData = ref([
+                {
+                    id: "list-01",
+                    title: "十字路口Crossing",
+                    author: "Koji&Ronghui",
+                    description: "关注AI变革与机会，访谈AI时代“积极行动者。”,
+                    tags: ["AI探索", "AI领域访谈"],
+                    episodes: [
+                        {
+                            name: "访谈张帆：前智谱COO，为何笃信AI的机会在TOB",
+                            myFeeling: "AI对于TOB来说，到底是机会，还是自嗨，张帆认为的AI对于TOC的机会是困难的，特别是在用户体验上，是非常容易追赶的，而有行业壁垒的反而是TOB的供应链、服务体系等，因此他认为AI的机会在TOB",
+                            link: "https://www.xiaoyuzhoufm.com/episode/691952ddcbba038b42bd9077" // 放入小宇宙单集链接
+                        },
+                        {
+                            name: "Openclaw之后，谁将定义主动式AI的新战场",
+                            myFeeling: "如何重定义主动式AI。",
+                            link: "https://www.xiaoyuzhoufm.com/episode/69c1ed91fdc405fbf6f58092" 
+                        }
+                    ]
+                },
+                {
+                    id: "list-02",
+                    title: "SaaS Interviews with CEOs",
+                    author: "Feed Agent",
+                    description: "What if you knew data behind the fastest growing SaaS Companies today?。",
+                    tags: ["SaaS"],
+                    episodes: [
+                        {
+                            name: "How Buildern Reached $2M Revenue With 300 Customers",
+                            myFeeling: "值得一听。",
+                            link: "https://www.xiaoyuzhoufm.com/episode/69d648b7f6e591a7acc2d165"
+                        }
+                    ]
+                }
+            ]);
+
+            const enterDetail = (list) => {
+                selectedList.value = list;
+                currentPage.value = 'detail';
+                window.scrollTo(0, 0);
+            };
+
+            return {
+                currentPage,
+                podcastData,
+                selectedList,
+                enterDetail
+            }
+        }
+    }).mount('#app')
+</script>
+</body>
+</html>
